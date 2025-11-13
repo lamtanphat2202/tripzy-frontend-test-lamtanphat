@@ -1,10 +1,18 @@
 "use client";
 
 import type React from "react";
-import { Select } from 'antd';
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MapPin, Calendar, Users, Search, ArrowRightLeft } from "lucide-react";
+import {
+    MapPin,
+    Calendar,
+    Users,
+    Search,
+    ArrowRightLeft,
+    Bus,
+} from "lucide-react";
+import Image from "next/image";
+import LocationSelect from "@/app/(home)/components/travel-select";
 
 interface SearchFormProps {
     mode?: string;
@@ -12,6 +20,16 @@ interface SearchFormProps {
 
 export default function SearchForm({ mode = "bus" }: SearchFormProps) {
     const router = useRouter();
+    const [fromLocation, setFromLocation] = useState("hcm");
+    const [toLocation, setToLocation] = useState(null);
+
+    // 2. Dữ liệu options (có thể lấy từ API)
+    const locationOptions = [
+        { value: "hcm", label: "Hồ Chí Minh" },
+        { value: "hn", label: "Hà Nội" },
+        { value: "dn", label: "Đà Nẵng" },
+        // ... các thành phố khác
+    ];
     const [formData, setFormData] = useState({
         from: "",
         to: "",
@@ -64,96 +82,26 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
             onSubmit={handleSearch}
             className="bg-white rounded-xl shadow-lg pt-2"
         >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6 relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-[200px] mb-6 relative px-4">
                 {/* FROM */}
-                <div className="flex flex-col items-start flex-1">
-                    <label className="text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide">
-                        FROM
-                    </label>
-                    <div className="flex items-center gap-2 border border-gray-300 rounded-lg px-3 py-2">
-                 <Select
-    showSearch
-    style={{ width: 200 }}
-    placeholder="Search to Select"
-    optionFilterProp="label"
-    filterSort={(optionA, optionB) =>
-      (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-    }
-    options={[
-      {
-        value: '1',
-        label: 'Not Identified',
-      },
-      {
-        value: '2',
-        label: 'Closed',
-      },
-      {
-        value: '3',
-        label: 'Communicated',
-      },
-      {
-        value: '4',
-        label: 'Identified',
-      },
-      {
-        value: '5',
-        label: 'Resolved',
-      },
-      {
-        value: '6',
-        label: 'Cancelled',
-      },
-    ]}
-  />
-                    </div>
-                </div>
+                <LocationSelect
+                    label="FROM"
+                    iconSrc="/bus-select.svg"
+                    placeholder="Enter city, terminal..."
+                    options={locationOptions}
+                    value={fromLocation}
+                    onChange={() => setFromLocation}
+                />
 
-                {/* TO */}
-                <div className="flex flex-col items-start flex-1">
-                    <label className="text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide">
-                        TO
-                    </label>
-                    <div className="flex items-center gap-2 border border-gray-300 rounded-lg px-3 py-2">
-                        <MapPin size={16} className="text-gray-500" />
-                        <input
-                            type="text"
-                            name="to"
-                            placeholder="Arrival city"
-                            value={formData.to}
-                            onChange={handleChange}
-                            className="flex-1 outline-none text-sm placeholder-gray-400"
-                        />
-                    </div>
-                </div>
-
-                <div className="hidden lg:flex items-end justify-center absolute left-1/3 top-1/2 transform -translate-y-1/2 -translate-x-1/2">
-                    <button
-                        type="button"
-                        onClick={handleSwap}
-                        className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full shadow-md transition-colors"
-                        title="Swap FROM and TO"
-                    >
-                        <ArrowRightLeft size={18} />
-                    </button>
-                </div>
-
-                {/* DEPARTURE DATE */}
-                <div className="flex flex-col items-start flex-1">
-                    <label className="text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide">
-                        DEPARTURE DATE
-                    </label>
-                    <div className="flex items-center gap-2 border border-gray-300 rounded-lg px-3 py-2">
-                        <Calendar size={16} className="text-gray-500" />
-                        <input
-                            type="date"
-                            name="departureDate"
-                            value={formData.departureDate}
-                            onChange={handleChange}
-                            className="flex-1 outline-none text-sm"
-                        />
-                    </div>
-                </div>
+                {/* Đây là Select "TO" */}
+                <LocationSelect
+                    label="TO"
+                    iconSrc="/bus-select.svg"
+                    placeholder="Enter city, terminal..."
+                    options={locationOptions}
+                    value={toLocation}
+                    onChange={() => setToLocation}
+                />
 
                 {/* RETURN TRIP */}
                 <div className="flex flex-col items-start">
@@ -216,7 +164,7 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
             )}
 
             {/* Search Button */}
-            <div className="flex justify-center">
+            <div className="flex justify-center py-20">
                 <button
                     type="submit"
                     className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-12 rounded-full transition-colors flex items-center gap-2 shadow-md"

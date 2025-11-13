@@ -10,7 +10,7 @@ export default function HeroSection() {
 
     return (
         <div className="bg-gradient-to-b from-[#F5F8FF] to-[#DBF5FF] py-[30px] text-center">
-            <div className="max-w-4xl mx-auto relative">
+            <div className="max-w-[1170px] mx-auto relative">
                 {/* Logo */}
                 <div className="flex items-center gap-2 mb-6">
                     <Image
@@ -19,7 +19,7 @@ export default function HeroSection() {
                         width={28.83}
                         height={30}
                     />
-                    <h1 className="text-2xl font-bold text-[#19C0FF] font-sans">
+                    <h1 className="text-2xl font-bold text-[#19C0FF] font-sans text-center">
                         Tripzy
                     </h1>
                 </div>
