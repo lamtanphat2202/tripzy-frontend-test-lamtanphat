@@ -15,7 +15,7 @@ interface LocationSelectProps {
     placeholder: string;
     options: SelectOption[];
     value: string | null; // Dùng `string | null` để cho phép giá trị rỗng/chưa chọn
-    onChange: (value: string | null) => void; // Hàm callback trả về giá trị đã chọn
+    onChange: (value: string) => void; // Hàm callback trả về giá trị đã chọn
 }
 
 export default function LocationSelect({

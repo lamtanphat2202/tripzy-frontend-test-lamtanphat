@@ -20,8 +20,8 @@ interface SearchFormProps {
 
 export default function SearchForm({ mode = "bus" }: SearchFormProps) {
     const router = useRouter();
-    const [fromLocation, setFromLocation] = useState("hcm");
-    const [toLocation, setToLocation] = useState(null);
+    const [fromLocation, setFromLocation] = useState("");
+    const [toLocation, setToLocation] = useState("");
 
     // 2. Dữ liệu options (có thể lấy từ API)
     const locationOptions = [
@@ -90,7 +90,7 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                     placeholder="Enter city, terminal..."
                     options={locationOptions}
                     value={fromLocation}
-                    onChange={() => setFromLocation}
+                    onChange={setFromLocation}
                 />
 
                 {/* Đây là Select "TO" */}
@@ -100,7 +100,7 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                     placeholder="Enter city, terminal..."
                     options={locationOptions}
                     value={toLocation}
-                    onChange={() => setToLocation}
+                    onChange={setToLocation}
                 />
 
                 {/* RETURN TRIP */}
