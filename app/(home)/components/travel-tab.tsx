@@ -31,7 +31,7 @@ export default function TravelTab({ activeTab, onTabChange }: TravelTabsProps) {
     ];
 
     return (
-        <div className="flex justify-between bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="flex justify-between bg-white p-[11px] rounded-lg shadow-sm border border-gray-200">
             {tabs.map((tab) => {
                 const isActive = activeTab === tab.id;
 
@@ -39,7 +39,7 @@ export default function TravelTab({ activeTab, onTabChange }: TravelTabsProps) {
                     <button
                         key={tab.id}
                         onClick={() => onTabChange(tab.id)}
-                        className={`flex items-center flex-1 gap-2 px-4 py-3 rounded-lg transition-all font-medium text-sm ${
+                        className={`flex items-center flex-1 gap-2 px-2 py-3 rounded-lg transition-all font-medium text-sm ${
                             isActive
                                 ? `${tab.activeClass}`
                                 : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
