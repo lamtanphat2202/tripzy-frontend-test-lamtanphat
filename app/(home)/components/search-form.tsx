@@ -1,134 +1,205 @@
 "use client";
 
-import type React from "react";
-import { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Calendar, Users, Search, ArrowRightLeft, User } from "lucide-react";
+import { Calendar, Search, ArrowRightLeft } from "lucide-react";
 import LocationSelect from "@/app/(home)/components/travel-select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { DatePicker, DatePickerProps, InputNumber } from "antd";
+import { DatePicker, InputNumber } from "antd";
 import Image from "next/image";
 import { locations } from "@/lib/data";
+import dayjs from "dayjs";
+import { SearchFormSchema } from "@/lib/validation";
 
 interface SearchFormProps {
     mode?: string;
 }
 
+// Type-safe errors
+type FormErrors = Record<string, string | null>;
+
 export default function SearchForm({ mode = "bus" }: SearchFormProps) {
     const router = useRouter();
-    const [fromLocation, setFromLocation] = useState<string | null>(null);
-    const [toLocation, setToLocation] = useState<string | null>(null);
 
     const [formData, setFormData] = useState({
-        from: "",
-        to: "",
-        departureDate: "",
+        from: null as string | null,
+        to: null as string | null,
+        departureDate: null as string | null,
         returnTrip: false,
-        returnDate: "",
-        passengers: "1",
+        returnDate: null as string | null,
+        passengers: 1,
     });
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-    ) => {
-        const { name, value, type } = e.target;
-        const checked =
-            type === "checkbox"
-                ? (e.target as HTMLInputElement).checked
-                : undefined;
+    const [errors, setErrors] = useState<FormErrors>({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const handleFieldChange = useCallback((field: string, value: any) => {
         setFormData((prev) => ({
             ...prev,
-            [name]: type === "checkbox" ? checked : value,
+            [field]: value,
         }));
-    };
 
-    const handleSwap = () => {
+        // Clear error của field đang được edit
+        setErrors((prev) => ({
+            ...prev,
+            [field]: null,
+        }));
+    }, []);
+
+    const handleSwap = useCallback(() => {
         setFormData((prev) => ({
             ...prev,
             from: prev.to,
             to: prev.from,
         }));
-    };
 
-    const handleSearch = (e: React.FormEvent) => {
+        // Clear errors cho from và to khi swap
+        setErrors((prev) => ({
+            ...prev,
+            from: null,
+            to: null,
+        }));
+    }, []);
+
+    const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const queryParams = new URLSearchParams({
-            mode: mode,
-            from: formData.from,
-            to: formData.to,
-            dep: formData.departureDate,
-            ret: formData.returnDate,
-            pax: formData.passengers,
-        }).toString();
+        if (isSubmitting) return;
 
-        router.push(`/search?${queryParams}`);
+        setIsSubmitting(true);
+
+        try {
+            const validatedData = SearchFormSchema.parse(formData);
+            setErrors({});
+
+            const fromLocation = locations.find(
+                (loc) => loc.short_code === validatedData.from
+            );
+            const toLocation = locations.find(
+                (loc) => loc.short_code === validatedData.to
+            );
+
+            const fromName =
+                fromLocation?.english_name || validatedData.from || "";
+            const toName = toLocation?.english_name || validatedData.to || "";
+
+            // 4. Build query params với 'english_name'
+            const queryParams = new URLSearchParams({
+                mode: mode,
+                from: fromName, // <-- ĐÃ THAY ĐỔI
+                to: toName, // <-- ĐÃ THAY ĐỔI
+                departureDate: validatedData.departureDate || "",
+                returnDate: validatedData.returnDate
+                    ? validatedData.returnDate
+                    : "No",
+                passengers: validatedData.passengers.toString(),
+            }).toString();
+
+            // 5. Điều hướng với URL đã cập nhật
+            router.push(`/search?${queryParams}`);
+        } catch (error: any) {
+            // Map Zod errors vào state
+            const newErrors: FormErrors = {};
+
+            if (error.issues) {
+                error.issues.forEach((issue: any) => {
+                    const field = issue.path[0] as string;
+                    newErrors[field] = issue.message;
+                });
+            }
+
+            setErrors(newErrors);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
-
-    const onChange: DatePickerProps["onChange"] = (date, dateString) => {
-        console.log(date, dateString);
-    };
-
     return (
         <form onSubmit={handleSearch} className="bg-white rounded-xl shadow-lg">
-            {/* SELECT LOCATION */}
             <div className="flex items-end gap-4 px-4 py-4">
                 <div className="flex items-end gap-2">
-                    {/* FROM LOCATION*/}
-                    <LocationSelect
-                        label="FROM"
-                        options={locations}
-                        value={fromLocation}
-                        onChange={setFromLocation}
-                    />
+                    {/* FROM LOCATION */}
+                    <div className="flex flex-col relative">
+                        <LocationSelect
+                            label="FROM"
+                            options={locations}
+                            value={formData.from}
+                            onChange={(value) =>
+                                handleFieldChange("from", value)
+                            }
+                        />
+                        {errors.from && (
+                            <span className="text-xs block text-red-500 mt-1 absolute top-full left-0">
+                                {errors.from}
+                            </span>
+                        )}
+                    </div>
 
                     {/* SWAP BUTTON */}
                     <button
                         type="button"
-                        onClick={() => handleSwap}
+                        onClick={handleSwap}
                         className="h-12 w-12 shadow-md flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-50 transition-colors"
                     >
                         <ArrowRightLeft size={18} color="#19C0FF" />
                     </button>
 
                     {/* TO LOCATION */}
-                    <LocationSelect
-                        label="TO"
-                        options={locations}
-                        value={toLocation}
-                        onChange={setToLocation}
-                    />
+                    <div className="flex flex-col relative">
+                        <LocationSelect
+                            label="TO"
+                            options={locations}
+                            value={formData.to}
+                            onChange={(value) => handleFieldChange("to", value)}
+                        />
+                        {errors.to && (
+                            <span className="text-xs block text-red-500 mt-1 absolute top-full left-0">
+                                {errors.to}
+                            </span>
+                        )}
+                    </div>
                 </div>
 
                 {/* Select Date */}
                 <div className="flex gap-4">
                     {/* DEPARTURE DATE */}
-                    <div className="flex flex-col items-start">
+                    <div className="flex flex-col relative items-start">
                         <label className="text-xs font-normal text-gray-600 mb-1 uppercase tracking-wide">
                             DEPARTURE DATE
                         </label>
                         <DatePicker
-                            onChange={onChange}
+                            onChange={(date, dateString) =>
+                                handleFieldChange("departureDate", dateString)
+                            }
                             className="min-w-[235px] h-13"
-                            placeholder="Select date"
+                            placeholder="DD / MM / YYYY  00:00"
                             prefix={<Calendar size={15} />}
                             suffixIcon={null}
+                            value={
+                                formData.departureDate
+                                    ? dayjs(formData.departureDate)
+                                    : null
+                            }
+                            status={errors.departureDate ? "error" : ""}
                         />
+                        {errors.departureDate && (
+                            <span className="text-xs block text-red-500 mt-1 absolute top-full left-0">
+                                {errors.departureDate}
+                            </span>
+                        )}
                     </div>
 
                     {/* RETURN TRIP */}
-                    <div className="flex flex-col items-start">
+                    <div className="flex flex-col relative items-start">
                         <div className="flex items-center gap-2 mb-1">
                             <Checkbox
                                 id="returnTrip"
                                 checked={formData.returnTrip}
                                 onCheckedChange={(checked) =>
-                                    setFormData((prev) => ({
-                                        ...prev,
-                                        returnTrip: checked as boolean,
-                                    }))
+                                    handleFieldChange(
+                                        "returnTrip",
+                                        checked as boolean
+                                    )
                                 }
                             />
                             <Label
@@ -139,18 +210,31 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                             </Label>
                         </div>
                         <DatePicker
-                            onChange={onChange}
+                            onChange={(date, dateString) =>
+                                handleFieldChange("returnDate", dateString)
+                            }
                             className="min-w-[235px] h-13"
-                            placeholder="DD / MM / YY "
+                            placeholder="DD / MM / YYYY 00:00"
                             prefix={<Calendar size={15} />}
                             disabled={!formData.returnTrip}
                             suffixIcon={null}
+                            value={
+                                formData.returnDate
+                                    ? dayjs(formData.returnDate)
+                                    : null
+                            }
+                            status={errors.returnDate ? "error" : ""}
                         />
+                        {errors.returnDate && (
+                            <span className="text-xs block text-red-500 mt-1 absolute top-full left-0">
+                                {errors.returnDate}
+                            </span>
+                        )}
                     </div>
                 </div>
 
                 {/* NO. OF PASSENGERS */}
-                <div className="flex flex-col items-start">
+                <div className="flex flex-col relative items-start">
                     <label className="text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">
                         NO. OF PASSENGER
                     </label>
@@ -164,28 +248,36 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                             />
                         }
                         min={1}
-                        defaultValue={1}
+                        value={formData.passengers}
+                        onChange={(value) =>
+                            handleFieldChange("passengers", value)
+                        }
                         style={{
                             width: 142,
                             height: 52,
-
                             display: "flex",
                             alignItems: "center",
                         }}
+                        status={errors.passengers ? "error" : ""}
                     />
+                    {errors.passengers && (
+                        <span className="text-xs block text-red-500 mt-1 absolute top-full left-0">
+                            {errors.passengers}
+                        </span>
+                    )}
                 </div>
             </div>
-            <div className="flex justify-center py-4">
+
+            <div className="flex justify-center py-6">
                 <button
-                    type="button"
-                    onClick={handleSearch}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-full transition-colors flex items-center gap-2 shadow-md whitespace-nowrap"
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-[#19C0FF] cursor-pointer text-white font-semibold py-3.5 px-[92px] rounded-full transition-colors flex items-center gap-2 shadow-md whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#15A8E0]"
                 >
-                    <Search size={18} />
-                    SEARCH
+                    <Search size={16} />
+                    {isSubmitting ? "SEARCHING..." : "SEARCH"}
                 </button>
             </div>
-            {/* Search Button */}
         </form>
     );
 }
