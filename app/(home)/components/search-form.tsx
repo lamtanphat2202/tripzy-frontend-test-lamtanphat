@@ -8,6 +8,8 @@ import LocationSelect from "@/app/(home)/components/travel-select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { DatePicker, DatePickerProps, InputNumber } from "antd";
+import Image from "next/image";
+import { locations } from "@/lib/data";
 
 interface SearchFormProps {
     mode?: string;
@@ -15,16 +17,9 @@ interface SearchFormProps {
 
 export default function SearchForm({ mode = "bus" }: SearchFormProps) {
     const router = useRouter();
-    const [fromLocation, setFromLocation] = useState("");
-    const [toLocation, setToLocation] = useState("");
+    const [fromLocation, setFromLocation] = useState<string | null>(null);
+    const [toLocation, setToLocation] = useState<string | null>(null);
 
-    // 2. Dữ liệu options (có thể lấy từ API)
-    const locationOptions = [
-        { value: "hcm", label: "Hồ Chí Minh" },
-        { value: "hn", label: "Hà Nội" },
-        { value: "dn", label: "Đà Nẵng" },
-        // ... các thành phố khác
-    ];
     const [formData, setFormData] = useState({
         from: "",
         to: "",
@@ -84,7 +79,7 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                     {/* FROM LOCATION*/}
                     <LocationSelect
                         label="FROM"
-                        options={locationOptions}
+                        options={locations}
                         value={fromLocation}
                         onChange={setFromLocation}
                     />
@@ -92,7 +87,7 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                     {/* SWAP BUTTON */}
                     <button
                         type="button"
-                        onClick={handleSwap}
+                        onClick={() => handleSwap}
                         className="h-12 w-12 shadow-md flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-50 transition-colors"
                     >
                         <ArrowRightLeft size={18} color="#19C0FF" />
@@ -101,7 +96,7 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                     {/* TO LOCATION */}
                     <LocationSelect
                         label="TO"
-                        options={locationOptions}
+                        options={locations}
                         value={toLocation}
                         onChange={setToLocation}
                     />
@@ -118,6 +113,8 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                             onChange={onChange}
                             className="min-w-[235px] h-13"
                             placeholder="Select date"
+                            prefix={<Calendar size={15} />}
+                            suffixIcon={null}
                         />
                     </div>
 
@@ -158,9 +155,16 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                         NO. OF PASSENGER
                     </label>
                     <InputNumber
-                        prefix={<User />} // Chèn icon
-                        min={1} // Yêu cầu là 'minimum 1'
-                        defaultValue={1} // Giá trị mặc định
+                        prefix={
+                            <Image
+                                src="/user.svg"
+                                alt="user-icon"
+                                width={16}
+                                height={16}
+                            />
+                        }
+                        min={1}
+                        defaultValue={1}
                         style={{
                             width: 142,
                             height: 52,
