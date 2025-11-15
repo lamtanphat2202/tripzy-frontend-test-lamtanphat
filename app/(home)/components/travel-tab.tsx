@@ -19,7 +19,7 @@ export default function TravelTab({ activeTab, onTabChange }: TravelTabsProps) {
                     <button
                         key={tab.id}
                         onClick={() => onTabChange(tab.id)}
-                        className={`flex items-center flex-1 gap-2 px-2 py-3 rounded-lg transition-all font-medium text-sm ${
+                        className={`flex cursor-pointer items-center flex-1 gap-2 px-2 py-3 rounded-lg transition-all font-medium text-sm ${
                             isActive
                                 ? `${tab.activeClass}`
                                 : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"

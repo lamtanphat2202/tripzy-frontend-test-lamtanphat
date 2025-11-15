@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 interface HomeLayoutProps {
@@ -12,7 +13,7 @@ export default function HomeLayout({ children }: HomeLayoutProps) {
             <div className="bg-gradient-to-b from-[#F5F8FF] to-[#DBF5FF] py-[30px] h-[500px]">
                 <div className="max-w-[1170px] mx-auto relative">
                     {/* Logo */}
-                    <div className="flex items-center gap-2 mb-6">
+                    <Link href="/" className="flex items-center gap-2 mb-6">
                         <Image
                             src="/emergency.svg"
                             alt="logo"
@@ -22,7 +23,7 @@ export default function HomeLayout({ children }: HomeLayoutProps) {
                         <h1 className="text-2xl font-bold text-[#19C0FF] font-sans text-center">
                             Tripzy
                         </h1>
-                    </div>
+                    </Link>
                     {children}
                 </div>
             </div>

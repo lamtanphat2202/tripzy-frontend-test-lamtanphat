@@ -270,7 +270,7 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="bg-[#19C0FF] cursor-pointer text-white font-semibold py-3.5 px-[92px] rounded-full transition-colors flex items-center gap-2 shadow-md whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#15A8E0]"
+                    className="bg-[#19C0FF] cursor-pointer hover:opacity-90 text-white font-semibold py-3.5 px-[92px] rounded-full transition-colors flex items-center gap-2 shadow-md whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#15A8E0]"
                 >
                     <Search size={16} />
                     {isSubmitting ? "SEARCHING..." : "SEARCH"}
