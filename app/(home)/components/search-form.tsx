@@ -16,7 +16,6 @@ interface SearchFormProps {
     mode?: string;
 }
 
-// Type-safe errors
 type FormErrors = Record<string, string | null>;
 
 export default function SearchForm({ mode = "bus" }: SearchFormProps) {
@@ -33,14 +32,13 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
 
     const [errors, setErrors] = useState<FormErrors>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
-
     const handleFieldChange = useCallback((field: string, value: any) => {
         setFormData((prev) => ({
             ...prev,
             [field]: value,
         }));
 
-        // Clear error của field đang được edit
+        // Clear Error
         setErrors((prev) => ({
             ...prev,
             [field]: null,
@@ -54,7 +52,7 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
             to: prev.from,
         }));
 
-        // Clear errors cho from và to khi swap
+        // Clear Error When Swap
         setErrors((prev) => ({
             ...prev,
             from: null,
@@ -73,6 +71,7 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
             const validatedData = SearchFormSchema.parse(formData);
             setErrors({});
 
+            // Convert Location Code To Location Name
             const fromLocation = locations.find(
                 (loc) => loc.short_code === validatedData.from
             );
@@ -84,11 +83,11 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                 fromLocation?.english_name || validatedData.from || "";
             const toName = toLocation?.english_name || validatedData.to || "";
 
-            // 4. Build query params với 'english_name'
+            // Build Query Param
             const queryParams = new URLSearchParams({
                 mode: mode,
-                from: fromName, // <-- ĐÃ THAY ĐỔI
-                to: toName, // <-- ĐÃ THAY ĐỔI
+                from: fromName,
+                to: toName,
                 departureDate: validatedData.departureDate || "",
                 returnDate: validatedData.returnDate
                     ? validatedData.returnDate
@@ -96,10 +95,9 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                 passengers: validatedData.passengers.toString(),
             }).toString();
 
-            // 5. Điều hướng với URL đã cập nhật
+            // Push Query Param
             router.push(`/search?${queryParams}`);
         } catch (error: any) {
-            // Map Zod errors vào state
             const newErrors: FormErrors = {};
 
             if (error.issues) {
