@@ -1,11 +1,10 @@
-// app/lib/validators.ts
 import { z } from "zod";
+
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 
 dayjs.extend(isSameOrAfter);
 
-// Đây là schema của bạn
 export const SearchFormSchema = z
     .object({
         from: z
@@ -18,28 +17,28 @@ export const SearchFormSchema = z
             .string()
             .nullable()
             .refine((val) => val, {
-                message: "Vui lòng chọn điểm đến.",
+                message: "Please select a destination.",
             }),
         departureDate: z
             .string()
             .nullable()
             .refine((val) => val, {
-                message: "Vui lòng chọn ngày đi.",
+                message: "Please select a departure date.",
             }),
         returnTrip: z.boolean(),
         returnDate: z.string().nullable(),
-        passengers: z.number().min(1, "Tối thiểu 1 hành khách."),
+        passengers: z.number().min(1, "Minimum 1 passenger."),
     })
     .refine(
         (data) => {
-            // Nếu là chuyến khứ hồi, ngày về là bắt buộc
+            // If it's a round trip, return date is required
             if (data.returnTrip && !data.returnDate) {
                 return false;
             }
             return true;
         },
         {
-            message: "Vui lòng chọn ngày về.",
+            message: "Please select a return date.",
             path: ["returnDate"],
         }
     )
@@ -51,10 +50,10 @@ export const SearchFormSchema = z
                     "day"
                 );
             }
-            return true; // Bỏ qua nếu không phải khứ hồi
+            return true; // Skip if not a round trip
         },
         {
-            message: "Ngày về phải sau hoặc bằng ngày đi.",
+            message: "Return date must be on or after the departure date.",
             path: ["returnDate"],
         }
     );

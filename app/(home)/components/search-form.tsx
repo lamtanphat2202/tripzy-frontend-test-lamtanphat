@@ -158,7 +158,7 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                     </div>
                 </div>
 
-                {/* Select Date */}
+                {/* SELECT DATE */}
                 <div className="flex gap-4">
                     {/* DEPARTURE DATE */}
                     <div className="flex flex-col relative items-start">
@@ -265,7 +265,7 @@ export default function SearchForm({ mode = "bus" }: SearchFormProps) {
                     )}
                 </div>
             </div>
-
+            {/* SEARCH BUTTON */}
             <div className="flex justify-center py-6">
                 <button
                     type="submit"

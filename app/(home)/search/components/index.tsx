@@ -3,10 +3,9 @@
 import { useSearchParams } from "next/navigation";
 
 export default function SearchContent() {
-    // 2. Gọi hook để lấy đối tượng searchParams
     const searchParams = useSearchParams();
 
-    // 3. Đọc trực tiếp các giá trị từ hook
+    //Get Hook From Param
     const from = searchParams.get("from") || "";
     const to = searchParams.get("to") || "";
     const departureDate = searchParams.get("departureDate") || "";

@@ -40,3 +40,24 @@ export const locations = [
         code_state: "+1 670 - Northern Mariana Islands",
     },
 ];
+
+export const tabs = [
+    {
+        id: "bus",
+        label: "Bus & Shuttle",
+        icon: "/bus.svg",
+        activeClass: "bg-[#EBF9FF]",
+    },
+    {
+        id: "hotel",
+        label: "Hotel & Accommodation",
+        icon: "/hotel.svg",
+        activeClass: "bg-[#F4FFEB]",
+    },
+    {
+        id: "flight",
+        label: "Flight",
+        icon: "/flight.svg",
+        activeClass: "bg-[#EBF4FF]",
+    },
+];

@@ -1,5 +1,6 @@
 "use client";
 
+import { tabs } from "@/lib/data";
 import { Bus, Hotel, Plane } from "lucide-react";
 import Image from "next/image";
 
@@ -9,27 +10,6 @@ interface TravelTabsProps {
 }
 
 export default function TravelTab({ activeTab, onTabChange }: TravelTabsProps) {
-    const tabs = [
-        {
-            id: "bus",
-            label: "Bus & Shuttle",
-            icon: "/bus.svg",
-            activeClass: "bg-[#EBF9FF]",
-        },
-        {
-            id: "hotel",
-            label: "Hotel & Accommodation",
-            icon: "/hotel.svg",
-            activeClass: "bg-[#F4FFEB]",
-        },
-        {
-            id: "flight",
-            label: "Flight",
-            icon: "/flight.svg",
-            activeClass: "bg-[#EBF4FF]",
-        },
-    ];
-
     return (
         <div className="flex justify-between bg-white p-[11px] rounded-lg shadow-sm border border-gray-200">
             {tabs.map((tab) => {
