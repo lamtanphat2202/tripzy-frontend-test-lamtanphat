@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tripzy
 
-## Getting Started
+This project is a web application built on Next.js 16 and React 19. The main language used is TypeScript, which ensures type-safety and easy code maintenance.
 
-First, run the development server:
+## Instructions to run the project
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* You can run the project by following these steps:
+    * `npm i` (To install all package needed)
+    * `npm run build` (Make sure project not get any issue)
+    * `npm run dev` (Run project)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* **Framework:** [Next.js](https://nextjs.org/) (v16)
+* **Language:** TypeScript
+* **UI:** React (v19)
+* **Styling:** Tailwind CSS (v4)
+* **Library component:**
+    * Ant Design (v5)
+    * Shadcn UI
+* **Icon:** Lucide React & Ant Design Icons
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Key Technical
 
-## Learn More
+* **Why I chose Next.js & TypeScript:**
+    * I chose [Next.js](https://nextjs.org/) because it provides a powerful React experience with routing, has a clear and easy-to-use system structure, optimizes for SEO, flexible rendering with SSR, SSG and ISR. TypeScript is used to provide type safety and improve the programming experience.
+* **About Component UI:**
+    * **Why choose shadcn/ui?** I chose shadcn/ui because it allows for flexible customization of components. It's built directly with Tailwind CSS and Radix UI, ensuring consistency in styling.
+    * **Why are you still using Ant Design?** While shadcn/ui is very powerful for basic and intermediate components, Ant Design is more diverse in the style of each component, giving me more suitable options.
 
-To learn more about Next.js, take a look at the following resources:
+## Vercel demo link
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[tripzy-lamtanphat.vercel.app](https://tripzy-lamtanphat.vercel.app)
