@@ -13,7 +13,7 @@ export default function SearchContent() {
     const passengers = searchParams.get("passengers") || "1";
 
     return (
-        <div className="h-[872px] w-full bg-white mt-[58px] shadow-2xl">
+        <div className="h-[700px] w-full bg-white mt-[58px] shadow-2xl">
             {/* Search Content */}
             <div className="px-[86px] py-[97px]">
                 <div className="flex flex-col space-y-2 text-lg">
